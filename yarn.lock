@@ -860,9 +860,9 @@ feathers-hooks@^2.0.0:
     feathers-commons "^0.8.6"
     uberproto "^1.2.0"
 
-feathers-nedb@^2.6.1:
-  version "2.6.1"
-  resolved "https://registry.yarnpkg.com/feathers-nedb/-/feathers-nedb-2.6.1.tgz#832d1e5689e351d5fbc85db4f5cbfcd1ca558651"
+feathers-nedb@^2.6.2:
+  version "2.6.2"
+  resolved "https://registry.yarnpkg.com/feathers-nedb/-/feathers-nedb-2.6.2.tgz#fef27b8d822fe64d635d1fab647f640c11754059"
   dependencies:
     feathers-commons "^0.8.1"
     feathers-errors "^2.0.1"

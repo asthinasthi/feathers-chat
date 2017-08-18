@@ -4,11 +4,9 @@
 // module.exports = function (app) {
 //   const dbPath = app.get('nedb');
 //   const Model = new NeDB({
-//     filename: path.join(dbPath, 'users.db'),
+//     filename: path.join(dbPath, 'elders.db'),
 //     autoload: true
 //   });
-
-//   Model.ensureIndex({ fieldName: 'email', unique: true });
 
 //   return Model;
 // };
@@ -17,14 +15,12 @@ const mongoose = require('mongoose')
 var Schema = mongoose.Schema;
 
 module.exports = function (app) {
-    var userSchema = new Schema({
-        email: { type: String, unique: true },
+    var elderSchema = new Schema({
         firstName: { type: String },
         lastName: { type: String },
-        password: { type: String }
+        fullName: { type: String},
+        createdAt: { type: Number }
     })
-    const userModel = mongoose.model('User', userSchema)
-    return userModel;
+    const elderModel = mongoose.model('Elder', elderSchema)
+    return elderModel;
 }
-
-

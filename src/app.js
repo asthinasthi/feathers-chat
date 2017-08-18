@@ -17,6 +17,8 @@ const appHooks = require('./app.hooks');
 
 const authentication = require('./authentication');
 
+const mongoose = require('mongoose')
+
 const app = feathers();
 
 // Load app configuration
@@ -38,8 +40,11 @@ app.configure(socketio());
 
 app.configure(authentication);
 
+mongoose.Promise = global.Promise;
+mongoose.connect('mongodb://localhost:27017/feathers');
 // Set up our services (see `services/index.js`)
 app.configure(services);
+
 // Configure middleware (see `middleware/index.js`) - always has to be last
 app.configure(middleware);
 app.hooks(appHooks);

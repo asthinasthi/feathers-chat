@@ -1,0 +1,177 @@
+<html>
+
+<head>
+  <link rel="stylesheet" href="/angular/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/angular/bootstrap-3.3.7-dist/css/bootstrap-theme.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+  <script src="/angular/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+  <script src="https://rawgithub.com/bassjobsen/Bootstrap-3-Typeahead/master/bootstrap3-typeahead.js"></script>
+  <script src="/angular/assets/js/angular.min.js"></script>
+  <script src="https://rawgithub.com/davidkonrad/angular-bootstrap3-typeahead/master/angular-bootstrap3-typeahead.js"></script>
+
+  <!-- <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css"> -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/moment.js"></script>
+  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/core-js/2.1.4/core.min.js"></script>
+  <script src="http://npmcdn.com/feathers-client@^2.0.0-pre.1/dist/feathers.js"></script>
+
+</head>
+<body ng-app="lbfeApp" ng-controller="mainCtrl as main" layout="column" ng-cloak>
+
+  <h1>Welcome to LBFE CheckIn Page!</h1>
+
+  <button class="btn btn-success" ng-click="logout()" ng-show="isLoggedIn">LogOut</button>
+  <p>{{welcomeMessage}} : {{loggedInUser}}</p>
+  <h2>Login: <i>{{isLoggedIn}}</i></h2>
+  <div ng-show="!isLoggedIn">
+    <form class="form" ng-submit="login(loginData)">
+      <fieldset>
+        <input type="email" name="email" placeholder="email" ng-model="loginData.email" />
+      </fieldset>
+      <fieldset>
+        <input type="password" name="password" placeholder="password" ng-model="loginData.password" />
+      </fieldset>
+      <button class="btn btn-success" id="login" type="submit">Login</button>
+    </form>
+  </div>
+
+  <!-- Register -->
+  <div ng-show="!isLoggedIn">
+    <h2>Register!</h2>
+    <form class="form" id="register-form" ng-submit="register(registerData)">
+      <fieldset>
+        <input type="email" ng-model="registerData.email" placeholder="email" />
+      </fieldset>
+      <fieldset>
+        <input type="password" ng-model="registerData.password" placeholder="password" />
+      </fieldset>
+      <button class="btn btn-success" id="register" type="submit">Register</button>
+    </form>
+  </div>
+  <!-- End Register -->
+  <ng-view></ng-view>
+  <!-- CheckIn -->
+  <div class="" align="center" style="width: 1000px; margin: 0 auto;">
+    <ul class="nav nav-tabs">
+      <li role="presentation" ng-class="{active: menu.home}"><a href="#" ng-click="activateNav('home')">Home</a></li>
+      <li role="presentation" ng-class="{active: menu.history}"><a href="#" ng-click="activateNav('history'); getHistory();">History</a></li>
+      <li role="presentation" ng-class="{active: menu.leaderboard}"><a href="#" ng-click="activateNav('leaderboard'); getLeaderboard();">Leaderboard</a></li>
+      <li role="presentation" ng-class="{active: menu.profile}"><a href="#" ng-click="activateNav('profile'); getProfile();">Profle</a></li>
+    </ul>
+    <div ng-show="menu.home">
+      <h1>CheckIn your visit!</h1>
+      <div>
+        <form class="">
+          <!-- add models-->
+          <!-- <input type="text" bs3-typeahead bs3-source="states" ng-model="value"/> -->
+          <label>Elder: </label>
+          <input type="text" bs3-typeahead bs3-promise="elders" bs3-displayText="displayText" bs3-afterSelect="afterSelect" bs3-addItem="addItem" ng-model="checkIn.elderName" placeholder="Name.." />
+          <a href="#"  data-toggle="modal" data-target="#createElderModal">Can't find your elder ?</a>
+          <div class="modal fade" id="createElderModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <!-- Create New Elder -->
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add your Elder to the system</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form>
+                  <div class="form-group">
+                    <label for="first-name" class="form-control-label" >FirstName:</label>
+                    <input type="text" class="form-control" id="first-name" ng-model="createElder.firstName">
+                    <label for="last-name" class="form-control-label">LastName:</label>
+                    <input type="text" class="form-control" id="last-name" ng-model="createElder.lastName">
+                  </div>
+                  <div class="form-group">
+                  </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" ng-click="createElder(createElder)">Create</button>
+              </div>
+            </div>
+          </div>
+        </div>
+          <br>
+          <label>Date of Visit: </label>
+          <input type="date" ng-model="checkIn.activityDate"/><br>
+          <label>Hours spent: </label>
+          <input type="number" ng-model="checkIn.hours" placeholder="2.5"/><br>
+          <label>Type of Visit: </label>
+          <select ng-model="checkIn.type">
+            <option value="IN_PERSON">IN_PERSON</option>
+            <option value="HOSPITAL_VISIT">HOSPITAL_VISIT</option>
+            <option value="OTHER">OTHER</option>
+          </select> <br>
+          <label>How is the elder doing ?</label>
+          <select ng-model="checkIn.elderHealthConcern">
+            <option value="OK">OK</option>
+            <option value="Needs Attention!">Needs Attention!</option>
+          </select> <br>
+          <label>What type of attention ?</label>
+          <select ng-model="checkIn.elderHealthStatus">
+            <option value="311">Setup for a meal service ?</option>
+            <option value="411">411</option>
+            <option value="911">Had to call the emergency services.</option>
+          </select> <br>
+          <button class="btn btn-success" id="checkinSubmit" type="submit" ng-click="createActivity(checkIn)" ng-disabled="">Submit</button>
+        </form>
+      </div>
+    </div>
+    <!-- History Tab -->
+    <div ng-show="menu.history">
+      <h1>History is active</h1>
+      <h2>Last Week: {{myHistory.lastWeekHrs}}</h2>
+      <h3>Last Month: {{myHistory.lastMonthHrs}}</h3>
+      <h4>Last Year: {{myHistory.lastYearHrs}}</h4>
+      <div ng-repeat="h in myHistory.feed">
+        <li>Visited {{h.elder.firstName + ' ' + h.elder.lastName}} on {{ h.activityDateStr}}</li>
+      </div>
+    </div>
+    <!-- History Tab End -->
+    <!-- Leaderboard -->
+    <div ng-show="menu.leaderboard">
+      <h1>Leaderboard is active</h1>
+      <div ng-repeat="l in leaderboard">
+        <li>{{l.user.firstName + ' ' + l.user.lastName}} - {{l.hours}}</li>
+      </div>
+    </div>
+    <!-- End Leaderboard -->
+    <!-- Profile -->
+    <div ng-show="menu.profile">
+      <h1>Profile:</h1>
+      <form>
+        <label>FirstName: </label>
+        <input type="text" ng-model="loggedInUser.firstName"/>
+        <label>LastName: </label>
+        <input type="text" ng-model="loggedInUser.lastName"/>
+        <label>email: </label>
+        <input type="text" ng-model="loggedInUser.email"/>
+        <!-- <label>Current Password: </label>
+        <input type="text" ng-model="loggedInUser.currentPassword"/>
+        <label>New Password: </label>
+        <input type="text" ng-model="loggedInUser.newPassword"/>
+        <label>Reenter New Password: </label>
+        <input type="text" ng-model="loggedInUser.reenterNewPassword"/> -->
+        <button class="btn btn-success" id="updateProfile" type="submit" ng-click="updateProfile(loggedInUser)" ng-disabled="">Update</button>
+      </form>  
+    </div>
+    <!-- End Profile -->
+  </div>
+
+
+</body>
+   <!-- AngularJS Material Dependencies -->
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.11/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.11/angular-animate.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.11/angular-aria.min.js"></script> -->
+    <!-- AngularJS Material Javascript now available via Google CDN; version 1.1.4 used here -->
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.4/angular-material.min.js"></script> -->
+
+    <script src="/angular/app.js"></script>
+
+
+</html>
